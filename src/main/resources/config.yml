@@ -1,0 +1,49 @@
+# 每个玩家允许放置的数量
+# 该配置项用于限制玩家允许放置告示牌的总数量
+# 值为一个整数，代表允许放置的告示牌数量
+# op或拥有limitsignquantity.amount权限的玩家不会进行判断
+# 填-1为不限制
+allowed_placement_amount: 10
+
+# 每个区块允许玩家放置的数量
+# 该配置项用于限制每个区块每个玩家允许放置告示牌的总数量
+# 值为一个整数，代表允许放置的告示牌数量
+# op或拥有limitsignquantity.block_amount权限的玩家不会进行判断
+# 填-1为不限制
+block_allowed_placement_amount: 5
+
+# 每个区块允许玩家放置的总数量
+# 该配置项用于限制每个区块所有玩家允许放置告示牌的总数量
+# 值为一个整数，代表允许放置的告示牌数量
+# op或拥有limitsignquantity.block_amount权限的玩家不会进行判断
+# 填-1为不限制
+block_allowed_placement_amount2: 30
+
+# 自定义权限说明
+# 拥有limitsignquantity.amount.XXX（XXX为数量）权限的玩家允许放置的告示牌数量为XXX
+# 例如拥有limitsignquantity.amount.30权限的玩家将忽略allowed_placement_amount的数量限制，能够放置30个告示牌（前提是不超过区块限制）
+# 但仍然受到区块允许放置数量限制
+# 拥有limitsignquantity.amount.XXX（XXX为数量）权限的玩家每个区块允许放置的告示牌数量为XXX
+# 例如拥有limitsignquantity.block_amount.30权限的玩家将忽略block_allowed_placement_amount的数量限制，能够放置30个告示牌（前提是不超过个人限制）
+# 但仍然受到玩家允许放置数量限制
+
+
+# 自定义消息内容，留空则为不发送
+# 支持以下变量
+# [name] - 玩家名称（ID）
+# [number1] - 玩家当前放置的告示牌是第几个，仅message2可用
+# [number2] - 玩家还能放置几个告示牌，仅message2、message3可用
+
+
+# 玩家放置告示牌时，超出玩家允许放置的数量的提示：
+message1: "§4[提示] §e放置的告示牌数量超过限制！最多只能放置§4 10 §e个告示牌！"
+
+# 玩家放置告示牌时，没有超过允许放置的数量的提示：
+message2: "§4[提示] §e这是你放置的第§4[number1]§e个告示牌，你还能放置§4[number2]§e个告示牌。"
+
+# 玩家的告示牌被摧毁时，提示玩家剩余数量：
+message3: "§4[提示] §e告示牌已移除！你还能放置§4[number2]§e个告示牌。"
+
+# 玩家放置告示牌时，超出区块允许放置的数量的提示：
+message4: "§4[提示] §e放置的告示牌数量超过区块限制！为保护服务器，当前区块已不能放置更多告示牌！"
+

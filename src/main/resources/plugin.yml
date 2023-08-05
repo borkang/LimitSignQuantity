@@ -1,0 +1,15 @@
+name: LimitSignQuantity
+version: '${project.version}'
+main: wiki.dawn.limitsignquantity.LimitSignQuantity
+api-version: '1.15'
+commands:
+  limitsignquantity:
+    aliases: lsq
+    usage: /<command>
+    permission: limitsignquantity.reload
+    permission-message: "§4你没有权限<permission>执行该命令！"
+permissions:
+  limitsignquantity.reload:
+    default: op
+  limitsignquantity.amount:
+    default: op
