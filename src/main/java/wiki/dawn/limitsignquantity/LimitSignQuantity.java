@@ -239,9 +239,9 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
             statement.setInt(5, signLocation.getBlockZ());
             // 执行SQL语句，从数据库中删除数据
             int deletedRows = statement.executeUpdate();
-            if (deletedRows <= 0) {
-                getLogger().warning("告示牌数据不存在于数据库中，无法从数据库删除！如果该告示牌为安装本插件前存在的，请忽略本消息");
-            }
+//            if (deletedRows <= 0) {       //因为可能较高频率触发，注释掉不做提醒
+//                getLogger().warning("告示牌数据不存在于数据库中，无法从数据库删除！如果该告示牌为安装本插件前存在的，请忽略本消息");
+//            }
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "删除告示牌数据时出现错误！", e);
             getLogger().warning("删除告示牌数据时出现错误！具体错误信息已记录到插件目录下的日志文件");
@@ -464,8 +464,11 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
         Block block = event.getBlock();
         // 检查方块是否是告示牌
         if (block.getState() instanceof Sign) {
+            Player player = event.getPlayer();
             Sign sign = (Sign) block.getState();
-            sendMessage(sign);
+            if (!(player.isOp() || (player.hasPermission("limitsignquantity.amount") && player.hasPermission("limitsignquantity.block_amount")))){
+                sendMessage(sign);// 向非op或无免判断权限的玩家发送消息
+            }
             deleteSignData(sign.getLocation());
         }
     }
