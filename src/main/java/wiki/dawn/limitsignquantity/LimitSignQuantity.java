@@ -338,7 +338,7 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
         if (!prefix.endsWith(".")) {
             prefix = prefix + ".";
         }
-        int value = 0;
+        int value = -1;
         for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
             String permission = info.getPermission();
             if (!permission.startsWith(prefix)) {
@@ -372,10 +372,10 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
         config = YamlConfiguration.loadConfiguration(configFile);
         allow_number = config.getInt("allowed_placement_amount", 10);
         allow_block_number = config.getInt("block_allowed_placement_amount", 5);
-        message1 = config.getString("message1", "§4[提示] §e放置的告示牌数量超过限制！最多只能放置§4[allowed_number]§e个告示牌！");
+        message1 = config.getString("message1", "§4[提示] §e放置的告示牌数量超过限制！最多只能放置§4 [number3] §e个告示牌！");
         message2 = config.getString("message2", "§4[提示] §e这是你放置的第§4[number1]§e个告示牌，你还能放置§4[number2]§e个告示牌。");
         message3 = config.getString("message3", "§4[提示] §e这是你放置的第§4[number1]§e个告示牌，你还能放置§4[number2]§e个告示牌。");
-        message4 = config.getString("message4", "§4[提示] §e放置的告示牌数量超过区块限制！为保护服务器，当前区块已不能放置更多告示牌！");
+        message4 = config.getString("message4", "§4[提示] §e放置告示牌数量超过区块限制！为保护服务器，当前区块不能放置更多告示牌！");
         connectToDatabase();
         setupLogger();
     }
@@ -420,8 +420,11 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
                         player.getLocation().getBlockZ() >> 4,
                         player.getWorld().getName(),
                         uuid);
-                int allowed_block_number = Math.max(allow_block_number, getPermissionValue(player, "limitsignquantity.block_amount."));
-                if (block_num >= allow_block_number) {
+                int number = getPermissionValue(player, "limitsignquantity.block_amount.");
+                int allowed_block_number;
+                if (number == -1) allowed_block_number = allow_block_number;
+                else allowed_block_number = Math.min(allow_block_number, number);
+                if (block_num >= allowed_block_number) {
                     event.setCancelled(true);
                     if (Objects.equals(message4, "")) return;
                     String msg4 = message4;
@@ -432,20 +435,26 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
             }
             if (allow_number != -1 || !player.hasPermission("limitsignquantity.amount")) {
                 int num = getPlayerSignCount(uuid);
-                int allowed_number = Math.max(allow_number, getPermissionValue(player, "limitsignquantity.amount."));
+                int allowed_number;
+                int number = getPermissionValue(player, "limitsignquantity.amount.");
+                if(number == -1) allowed_number = allow_number;
+                else allowed_number = Math.min(allow_number,number);
                 if (num >= allowed_number) {
                     event.setCancelled(true);
                     if (Objects.equals(message1, "")) return;
                     String msg1 = message1;
                     msg1 = msg1.replace("[name]", player.getName());
+                    msg1 = msg1.replace("[number3]", Integer.toString(allowed_number));
                     player.sendMessage(msg1);
                     return;
                 } else {
                     if (Objects.equals(message2, "")) {saveSignData((Sign) block.getState(), player.getUniqueId().toString(), player.getWorld().getName());return;}
                     String msg2 = message2;
                     msg2 = msg2.replace("[name]", player.getName());
-                    msg2 = msg2.replace("[number1]", Integer.toString(num - 1));
+                    msg2 = msg2.replace("[number1]", Integer.toString(num + 1));
                     msg2 = msg2.replace("[number2]", Integer.toString(allowed_number - num - 1));
+                    msg2 = msg2.replace("[number3]", Integer.toString(allowed_number));
+                    msg2 = msg2.replace("[number3]", Integer.toString(allowed_number));
                     player.sendMessage(msg2);
                     //saveSignData((Sign) block.getState(), player.getUniqueId().toString(), player.getWorld().getName());
                 }
@@ -510,7 +519,8 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
         String msg3 = message3;
         msg3 = msg3.replace("[name]", player.getName());
         int number = getPlayerSignCount(uuid.toString());
-        msg3 = msg3.replace("[number2]", Objects.toString(Math.max(allow_number - number + 1, 0)));
+        msg3 = msg3.replace("[number2]", Integer.toString(Math.max(allow_number - number + 1, 0)));
+        msg3 = msg3.replace("[number3]", Integer.toString(allow_number));
         player.sendMessage(msg3);
     }
 
