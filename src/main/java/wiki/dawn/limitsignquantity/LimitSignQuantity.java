@@ -425,9 +425,8 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
                     event.setCancelled(true);
                     if (Objects.equals(message4, "")) return;
                     String msg4 = message4;
-                    message4 = message4.replace("[name]", player.getName());
-                    player.sendMessage(message4);
-                    message4 = msg4;
+                    msg4 = msg4.replace("[name]", player.getName());
+                    player.sendMessage(msg4);
                     return;
                 }
             }
@@ -438,18 +437,16 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
                     event.setCancelled(true);
                     if (Objects.equals(message1, "")) return;
                     String msg1 = message1;
-                    message1 = message1.replace("[name]", player.getName());
-                    player.sendMessage(message1);
-                    message1 = msg1;
+                    msg1 = msg1.replace("[name]", player.getName());
+                    player.sendMessage(msg1);
                     return;
                 } else {
-                    if (Objects.equals(message2, "")) return;
+                    if (Objects.equals(message2, "")) {saveSignData((Sign) block.getState(), player.getUniqueId().toString(), player.getWorld().getName());return;}
                     String msg2 = message2;
-                    message2 = message2.replace("[name]", player.getName());
-                    message2 = message2.replace("[number1]", Integer.toString(num - 1));
-                    message2 = message2.replace("[number2]", Integer.toString(allowed_number - num - 1));
-                    player.sendMessage(message2);
-                    message2 = msg2;
+                    msg2 = msg2.replace("[name]", player.getName());
+                    msg2 = msg2.replace("[number1]", Integer.toString(num - 1));
+                    msg2 = msg2.replace("[number2]", Integer.toString(allowed_number - num - 1));
+                    player.sendMessage(msg2);
                     //saveSignData((Sign) block.getState(), player.getUniqueId().toString(), player.getWorld().getName());
                 }
             }
@@ -511,11 +508,10 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
         if (!player.isOnline()) return;
         if (Objects.equals(message3, "")) return;
         String msg3 = message3;
-        message3 = message3.replace("[name]", player.getName());
+        msg3 = msg3.replace("[name]", player.getName());
         int number = getPlayerSignCount(uuid.toString());
-        message3 = message3.replace("[number2]", Objects.toString(Math.max(allow_number - number + 1, 0)));
-        player.sendMessage(message3);
-        message3 = msg3;
+        msg3 = msg3.replace("[number2]", Objects.toString(Math.max(allow_number - number + 1, 0)));
+        player.sendMessage(msg3);
     }
 
     @Override
