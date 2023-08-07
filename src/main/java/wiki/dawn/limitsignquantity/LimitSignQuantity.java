@@ -423,7 +423,7 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
                 int number = getPermissionValue(player, "limitsignquantity.block_amount.");
                 int allowed_block_number;
                 if (number == -1) allowed_block_number = allow_block_number;
-                else allowed_block_number = Math.min(allow_block_number, number);
+                else allowed_block_number = number;
                 if (block_num >= allowed_block_number) {
                     event.setCancelled(true);
                     if (Objects.equals(message4, "")) return;
@@ -438,7 +438,7 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
                 int allowed_number;
                 int number = getPermissionValue(player, "limitsignquantity.amount.");
                 if(number == -1) allowed_number = allow_number;
-                else allowed_number = Math.min(allow_number,number);
+                else allowed_number = number;
                 if (num >= allowed_number) {
                     event.setCancelled(true);
                     if (Objects.equals(message1, "")) return;
@@ -472,9 +472,7 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
         if (block.getState() instanceof Sign) {
             Player player = event.getPlayer();
             Sign sign = (Sign) block.getState();
-            if (!(player.isOp() || (player.hasPermission("limitsignquantity.amount") && player.hasPermission("limitsignquantity.block_amount")))){
-                sendMessage(sign);// 向非op或无免判断权限的玩家发送消息
-            }
+            sendMessage(sign);// 向非op或无免判断权限的玩家发送消息
             deleteSignData(sign.getLocation());
         }
     }
@@ -516,11 +514,15 @@ public final class LimitSignQuantity extends JavaPlugin implements Listener {
         }
         if (!player.isOnline()) return;
         if (Objects.equals(message3, "")) return;
+        int number = getPermissionValue(player,"limitsignquantity.amount.");
+        int allowed_number;
+        if(number == -1) allowed_number = allow_number;
+        else allowed_number = number;
         String msg3 = message3;
         msg3 = msg3.replace("[name]", player.getName());
-        int number = getPlayerSignCount(uuid.toString());
-        msg3 = msg3.replace("[number2]", Integer.toString(Math.max(allow_number - number + 1, 0)));
-        msg3 = msg3.replace("[number3]", Integer.toString(allow_number));
+        int number2 = getPlayerSignCount(uuid.toString());
+        msg3 = msg3.replace("[number2]", Integer.toString(Math.max(allowed_number - number2 + 1, 0)));
+        msg3 = msg3.replace("[number3]", Integer.toString(allowed_number));
         player.sendMessage(msg3);
     }
 
